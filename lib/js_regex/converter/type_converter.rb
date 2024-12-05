@@ -1,18 +1,15 @@
 require_relative 'base'
 
-class JsRegex
+module LangRegex
   module Converter
     #
     # Template class implementation.
     #
-    class TypeConverter < JsRegex::Converter::Base
+    class TypeConverter < Base
       HEX_EXPANSION              = '[0-9A-Fa-f]'
       NONHEX_EXPANSION           = '[^0-9A-Fa-f]'
       I_MODE_HEX_EXPANSION       = '[0-9A-F]'
       I_MODE_NONHEX_EXPANSION    = '[^0-9A-F]'
-      ES2018_HEX_EXPANSION       = '\p{AHex}'
-      ES2018_NONHEX_EXPANSION    = '\P{AHex}'
-      ES2018_XGRAPHEME_EXPANSION = '[\P{M}\P{Lm}](?:(?:[\u035C\u0361]\P{M}\p{M}*)|\u200d|\p{M}|\p{Lm}|\p{Emoji_Modifier})*'
       LINEBREAK_EXPANSION        = '(?:\r\n|[\n\v\f\r\u0085\u2028\u2029])'
 
       def self.directly_compatible?(expression, _context = nil)
@@ -44,9 +41,7 @@ class JsRegex
       end
 
       def hex_expansion
-        if context.es_2018_or_higher? && context.enable_u_option
-          ES2018_HEX_EXPANSION
-        elsif context.case_insensitive_root
+        if context.case_insensitive_root
           I_MODE_HEX_EXPANSION
         else
           HEX_EXPANSION
@@ -54,9 +49,7 @@ class JsRegex
       end
 
       def nonhex_expansion
-        if context.es_2018_or_higher? && context.enable_u_option
-          ES2018_NONHEX_EXPANSION
-        elsif context.case_insensitive_root
+        if context.case_insensitive_root
           I_MODE_NONHEX_EXPANSION
         else
           NONHEX_EXPANSION
@@ -78,11 +71,7 @@ class JsRegex
       end
 
       def xgrapheme
-        if context.es_2018_or_higher? && context.enable_u_option
-          ES2018_XGRAPHEME_EXPANSION
-        else
-          warn_of_unsupported_feature
-        end
+        warn_of_unsupported_feature
       end
     end
   end
