@@ -28,12 +28,12 @@ describe LangRegex::Converter::TypeConverter do
       .to keep_matching(" ").and keep_not_matching(' ')
   end
 
-  it 'substitutes the hex type "\h" with an equivalent set', targets: [ES2009, ES2015, PHP] do
+  it 'substitutes the hex type "\h" with an equivalent set', targets: [ES2009, ES2015, PHP, PYTHON] do
     expect(/\h+/).to\
     become(/[0-9A-Fa-f]+/).and keep_matching('f').and keep_not_matching('x')
   end
 
-  it 'substitutes the hex type "\h" with an equivalent set in i-mode', targets: [ES2009, ES2015, PHP] do
+  it 'substitutes the hex type "\h" with an equivalent set in i-mode', targets: [ES2009, ES2015, PHP, PYTHON] do
     expect(/\h+/i).to\
     become(/[0-9A-F]+/i).and keep_matching('f').and keep_not_matching('x')
   end
@@ -43,12 +43,12 @@ describe LangRegex::Converter::TypeConverter do
     become(/\p{AHex}+/).and keep_matching('f').and keep_not_matching('x')
   end
 
-  it 'substitutes the nonhex type "\H" with an equivalent set', targets: [ES2009, ES2015, PHP] do
+  it 'substitutes the nonhex type "\H" with an equivalent set', targets: [ES2009, ES2015, PHP, PYTHON] do
     expect(/\H+/).to\
     become(/[^0-9A-Fa-f]+/).and keep_matching('x').and keep_not_matching('f', 'F')
   end
 
-  it 'substitutes the nonhex type "\H" with an equivalent set in i-mode', targets: [ES2009, ES2015, PHP] do
+  it 'substitutes the nonhex type "\H" with an equivalent set in i-mode', targets: [ES2009, ES2015, PHP, PYTHON] do
     expect(/\H+/i).to\
     become(/[^0-9A-F]+/i).and keep_matching('x').and keep_not_matching('f', 'F')
   end
@@ -64,7 +64,7 @@ describe LangRegex::Converter::TypeConverter do
       .and keep_matching("_\n_\r\n_", with_results: %W[\n \r\n])
   end
 
-  it 'drops the extended grapheme type "\X" with warning', targets: [ES2009, ES2015, PHP] do
+  it 'drops the extended grapheme type "\X" with warning', targets: [ES2009, ES2015, PHP, PYTHON] do
     expect(/a\Xb/).to\
     become(/ab/)
       .with_warning("Dropped unsupported xgrapheme type '\\X' at index 1")

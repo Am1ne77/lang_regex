@@ -7,8 +7,10 @@ module LangRegex
 
     PHP    = 'PHP'
 
+    PYTHON = 'PYTHON'
+
     FULLY_SUPPORTED = [ES2009, ES2015, ES2018].freeze
-    PARTIALLY_SUPPORTED = [PHP].freeze
+    PARTIALLY_SUPPORTED = [PHP, PYTHON].freeze
     SUPPORTED = [*FULLY_SUPPORTED, *PARTIALLY_SUPPORTED].freeze
 
     def self.cast(arg)

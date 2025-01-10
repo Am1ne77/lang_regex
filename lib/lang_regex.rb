@@ -6,6 +6,7 @@ module LangRegex
 
     require_relative File.join('js_regex', 'langs', 'js', 'js_regex')
     require_relative File.join('js_regex', 'langs', 'php', 'php_regex')
+    require_relative File.join('js_regex', 'langs', 'python', 'python_regex')
 
     require 'json'
 

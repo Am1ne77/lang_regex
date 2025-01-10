@@ -43,6 +43,8 @@ def conversions(rb_regex)
     output = $js_regex_cache[[rb_regex, target]] ||=
       if target == PHP
         LangRegex::PhpRegex.new(rb_regex, target: target)
+      elsif target == PYTHON
+        LangRegex::PythonRegex.new(rb_regex, target: target)
       else
         LangRegex::JsRegex.new(rb_regex, target: target)
       end
@@ -141,6 +143,8 @@ RSpec::Matchers.define(:keep_matching) do |*test_strings, with_results: nil|
           rb_regex =~ string || @msg = "rb did not match `#{string}`"
           if target == PHP
             test_in_php(js_regex, string) || @msg = "php did not match `#{string}`"
+          elsif target == PYTHON
+            test_in_python(js_regex, string) || @msg = "python did not match `#{string}`"
           else
             test_in_js(js_regex, string) || @msg = "js did not match `#{string}`"
           end
@@ -162,6 +166,8 @@ RSpec::Matchers.define(:keep_not_matching) do |*test_strings|
         rb_regex =~ string && @msg = "rb did match `#{string}`"
         if target == PHP
           test_in_php(js_regex, string) && @msg = "php did match `#{string}`"
+        elsif target == PYTHON
+          test_in_python(js_regex, string) && @msg = "python did match `#{string}`"
         else
           test_in_js(js_regex, string) && @msg = "js did match `#{string}`"
         end
@@ -219,6 +225,15 @@ require 'open3'
 
 def test_in_php(php_regex, string)
   _, _, status = Open3.capture3('php', '-r', "exit(preg_match('#{php_regex}', '#{js_escape(string)}'));")
+  !status.success?
+end
+
+def test_in_python(python_regex, string)
+  _, _, status = Open3.capture3(
+    'python',
+    '-c',
+    "import re; exit(bool(re.search(r'#{python_regex}', '#{js_escape(string)}')));"
+  )
   !status.success?
 end
 
