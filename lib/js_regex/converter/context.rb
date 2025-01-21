@@ -10,6 +10,7 @@ module LangRegex
                   :case_insensitive_root,
                   :fail_fast,
                   :in_atomic_group,
+                  :target,
                   :warnings
 
       def initialize(case_insensitive_root: false, fail_fast: false, target: nil)
@@ -101,13 +102,13 @@ module LangRegex
 
       attr_accessor :added_capturing_groups_after_group,
                     :recursions_per_expression,
-                    :required_options_hash,
-                    :target
+                    :required_options_hash
 
       attr_writer :capturing_group_count,
                   :case_insensitive_root,
                   :fail_fast,
                   :in_atomic_group,
+                  :target,
                   :warnings
 
       def total_added_capturing_groups

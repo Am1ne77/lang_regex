@@ -1,5 +1,9 @@
 module LangRegex
   class JavaRegex < LangRegex
+    Dir[File.join(__dir__, 'converter', '*.rb')].sort.each do |file|
+      require file
+    end
+
     def initialize(ruby_regex, **kwargs)
       super(ruby_regex, self.class.java_converter, target: Target::JAVA, **kwargs)
     end

@@ -17,6 +17,47 @@ describe LangRegex::Converter::LiteralConverter do
     become(/\n\n/).and keep_matching("a\n\nb", with_results: %W[\n\n])
   end
 
+  it 'escapes " when needed', targets: [JAVA, PHP, PYTHON] do
+    expect(/"/).to\
+    become(/\"/).and keep_matching('"')
+  end
+
+  it "escapes ' when needed", targets: [PHP, PYTHON] do
+    expect(/'/).to\
+    become(/\'/).and keep_matching("'")
+  end
+
+  it 'escapes - in Java', targets: [JAVA] do
+    expect(/-/).to\
+    become(/\-/).and keep_matching('-')
+  end
+
+  it 'escapes = in Java', targets: [JAVA] do
+    expect(/=/).to\
+    become(/\=/).and keep_matching('=')
+  end
+
+  it 'escapes ! in Java', targets: [JAVA] do
+    expect(/!/).to\
+    become(/\!/).and keep_matching('!')
+  end
+
+  it 'escapes {} in Java', targets: [JAVA] do
+    expect(/{/).to\
+    become(/\{/).and keep_matching('{')
+
+    expect(/}/).to\
+    become(/\}/).and keep_matching('}')
+  end
+
+  it 'escapes <> in Java', targets: [JAVA] do
+    expect(/</).to\
+    become(/\</).and keep_matching('<')
+
+    expect(/>/).to\
+    become(/\>/).and keep_matching('>')
+  end
+
   it 'does not add escapes to \\n' do
     expect(/\\n/).to stay_the_same.and keep_matching('\\n', with_results: %w[\\n])
   end

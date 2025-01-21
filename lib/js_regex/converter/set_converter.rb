@@ -45,7 +45,7 @@ module LangRegex
             exp.text =~ LiteralConverter::ASTRAL_PLANE_CODEPOINT_PATTERN &&
             !context.enable_u_option
 
-          LiteralConverter.escape_incompatible_bmp_literals(exp.text)
+          LiteralConverter.escape_incompatible_bmp_literals(exp.text, context.target)
         when :set
           # full conversion is needed for nested sets and intersections
           exp.token.equal?(:range) && exp.expressions.map do |op|
@@ -62,7 +62,7 @@ module LangRegex
             EscapeConverter.new(@converter).convert(exp, context)
           when :literal
             exp.char.ord <= 0xFFFF &&
-              LiteralConverter.escape_incompatible_bmp_literals(exp.char)
+              LiteralConverter.escape_incompatible_bmp_literals(exp.char, context.target)
           end
         end
       end

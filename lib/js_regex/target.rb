@@ -26,5 +26,14 @@ module LangRegex
         "Unknown target: #{arg.inspect}. Try one of #{SUPPORTED}."
       ).extend(::LangRegex::Error)
     end
+
+    def self.class_name(arg)
+      res = cast(arg)
+      if /ES20\d\d/.match? res
+        'js'
+      else
+        res
+      end.capitalize
+    end
   end
 end
