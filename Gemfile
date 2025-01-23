@@ -3,6 +3,7 @@ source 'https://rubygems.org'
 # Specify your gem's dependencies in js_regex.gemspec
 gemspec
 
+gem 'colorize'
 gem 'debug'
 gem 'gouteur', '~> 1.0'
 gem 'mini_racer', '~> 0.16'

@@ -1,0 +1,64 @@
+#!/usr/bin/env ruby
+
+require 'bundler/setup'
+require 'colorize'
+require 'optparse'
+
+require 'lang_regex'
+
+def display_conversion(lang, regex)
+  puts "------------------- #{lang}".green
+  if LangRegex::Target::JS.include? lang.to_s
+    puts LangRegex::JsRegex.new(Regexp.new(regex), target: lang)
+  else
+    puts Object.const_get("LangRegex::#{lang}Regex").new(Regexp.new(regex))
+  end
+end
+
+def display_all_conversions(langs, regex)
+  langs.each do |lang|
+    display_conversion lang, regex
+  end
+end
+
+langs = []
+
+option_parser = OptionParser.new do |opts|
+  opts.banner = 'Usage: lang_regex [options] [single regex]'
+
+  # Output languages.
+  opts.separator ''
+  opts.separator 'Output languages:'
+  opts.on('-j', '--java', 'convert to Java regex') do
+    langs << :Java
+  end
+  opts.separator ''
+  opts.on('-J', '--es09', 'convert to ES09 regex') do
+    langs << :ES2009
+  end
+  opts.on('--es15', 'convert to ES15 regex') do
+    langs << :ES2015
+  end
+  opts.on('--es18', 'convert to ES18 regex') do
+    langs << :ES2018
+  end
+  opts.separator ''
+  opts.on('-p', '--php', 'convert to Php regex') do
+    langs << :Php
+  end
+  opts.separator ''
+  opts.on('-y', '--python', 'convert to Python regex') do
+    langs << :Python
+  end
+end
+
+option_parser.parse!
+
+if ARGV.empty?
+  require 'readline'
+  while (buf = Readline.readline('❯❯❯ '.red, true))
+    display_all_conversions langs, buf
+  end
+else
+  display_all_conversions langs, ARGV.last
+end
