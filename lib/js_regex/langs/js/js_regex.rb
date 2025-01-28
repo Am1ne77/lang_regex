@@ -19,7 +19,7 @@ module LangRegex
     def self.js_converter
       Converter::Converter.new(
         {
-          anchor:      Converter::AnchorConverter,
+          anchor:      Converter::Js::AnchorConverter,
           assertion:   Converter::AssertionConverter,
           backref:     Converter::BackreferenceConverter,
           conditional: Converter::ConditionalConverter,

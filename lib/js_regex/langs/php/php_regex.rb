@@ -11,6 +11,7 @@ module LangRegex
     def self.php_converter
       Converter::Converter.new(
         {
+          anchor:      Converter::Php::AnchorConverter,
           expression:  Converter::SubexpressionConverter,
           literal:     Converter::LiteralConverter,
           type:        Converter::TypeConverter

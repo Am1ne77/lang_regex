@@ -11,6 +11,7 @@ module LangRegex
     def self.java_converter
       Converter::Converter.new(
         {
+          anchor:      Converter::Java::AnchorConverter,
           expression:  Converter::SubexpressionConverter,
           literal:     Converter::LiteralConverter,
           type:        Converter::Java::TypeConverter

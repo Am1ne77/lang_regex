@@ -130,9 +130,14 @@ RSpec::Matchers.define(:keep_matching) do |*test_strings, with_results: nil|
       test_strings.each do |string|
         if with_results
           rb_matches = string.scan(rb_regex).flatten
-          js_matches = matches_in_js(js_regex, string)
           rb_matches == with_results || @msg = "rb matched #{rb_matches}"
-          js_matches == with_results || @msg = "js matched #{js_matches}"
+          if LangRegex::Target::JS.include?(target)
+            js_matches = matches_in_js(js_regex, string)
+            js_matches == with_results || @msg = "js matched #{js_matches}"
+          else
+            lang_matches = send("matches_in_#{target.downcase}", js_regex, string)
+            lang_matches == with_results || @msg = "#{target} matched #{lang_matches}"
+          end
         else
           # Due to JS' different splitting of group match data, some return values
           # are not completely identical between Ruby and JS matching calls.
@@ -220,6 +225,28 @@ require 'open3'
 
 FileUtils.mkdir_p('tmp/')
 
+def matches_in_java(java_regex, string)
+  java_code = <<~JAVA
+    import java.util.regex.*;
+    import java.util.ArrayList;
+    import java.util.List;
+
+    public class TestRegex {
+      public static void main(String[] args) {
+        Pattern pattern = Pattern.compile("#{java_regex}");
+        Matcher matcher = pattern.matcher("#{js_escape(string)}");
+
+        while (matcher.find()) {
+          System.out.println(matcher.group());
+        }
+      }
+    }
+  JAVA
+  File.write('tmp/test.java', java_code)
+  out, = Open3.capture3('java', 'tmp/test.java')
+  out.split("\n")
+end
+
 def test_in_java(java_regex, string)
   java_code = <<~JAVA
     import java.util.regex.*;
@@ -236,9 +263,27 @@ def test_in_java(java_regex, string)
   !status.success?
 end
 
+def matches_in_php(php_regex, string)
+  out, = Open3.capture3(
+    'php',
+    '-r',
+    "preg_match_all('#{php_regex}', '#{js_escape(string)}', $matches); echo implode(PHP_EOL, $matches[0]);"
+  )
+  out.split("\n")
+end
+
 def test_in_php(php_regex, string)
   _, _, status = Open3.capture3('php', '-r', "exit(preg_match(\"#{php_regex}\", \"#{js_escape(string)}\"));")
   !status.success?
+end
+
+def matches_in_python(python_regex, string)
+  out, = Open3.capture3(
+    'python',
+    '-c',
+    "import re; print('\\n'.join(re.findall(r'#{python_regex}', '#{js_escape(string)}')));"
+  )
+  out.split("\n")
 end
 
 def test_in_python(python_regex, string)

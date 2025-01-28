@@ -44,7 +44,7 @@ describe LangRegex do
                       'test_user@example.com.']
 
     expect(/\A[^@\s]+@(?:[^@\s]+\.)+[^@\W]+\z/).to\
-    become(/^[^@\s]+@(?:[^@\s]+\.)+[^@\W]+$/)
+    become(/(?<!.|\n)[^@\s]+@(?:[^@\s]+\.)+[^@\W]+(?!.|\n)/)
       .and keep_matching(*valid_emails)
       .and keep_not_matching(*invalid_emails)
   end

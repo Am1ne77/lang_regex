@@ -11,6 +11,7 @@ module LangRegex
     def self.python_converter
       Converter::Converter.new(
         {
+          anchor:      Converter::Python::AnchorConverter,
           expression:  Converter::SubexpressionConverter,
           literal:     Converter::LiteralConverter,
           type:        Converter::TypeConverter
